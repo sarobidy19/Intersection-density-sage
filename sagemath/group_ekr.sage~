@@ -1,0 +1,56 @@
+#!/usr/bin/sage
+
+import numpy as np
+import sys
+
+n = int(sys.argv[1])
+#G = PermutationGroup(list(SymmetricGroup(n)))
+#print G
+
+def get_derangements(G): 
+    D = []
+    for x in G:
+        listx = range(1,G.domain().cardinality())   #domain is the G-set 
+        i = np.random.choice(listx)                 #pick randomly an element to test
+        a = 'true'
+        while(len(listx) != 0 and a == 'true'):     #list is nonempty and key (derangement) is true
+            if x(i) == i:
+                a = 'false'
+            else:
+                listx.remove(i)                     #remove the entry if not a derangement
+                if len(listx) == 0:
+                    break;
+            i = np.random.choice(listx)
+        if len(listx) == 0:
+            D.append(x)
+        else:
+            pass
+    return D        
+#print get_derangements(G)
+
+def cayleygraph(G):
+    X = G.cayley_graph(generators = get_derangements(G))
+    X = Graph(X)
+    Y = X.independent_set()
+    y = list(Y)[0]
+    Z = [y.inverse()*i for i in Y]
+    a ='False'
+    print G.domain()
+    for i in G.domain():
+        if set(G.stabilizer(i)) == Z:
+            a = 'true'#,set(G.stabilizer(i)),Z
+            break
+        else:
+            a = 'false'#,set(G.stabilizer(i)),Z
+    return len(Y),G.stabilizer(1).cardinality(),G.group_id()#,a
+
+
+    
+G = SymmetricGroup(n)
+
+for H in G.conjugacy_classes_subgroups():
+    #if H.order() == n:
+    if H.is_transitive() == (1==1):
+        print cayleygraph(H)#,"transitive ",
+    else:
+        pass
