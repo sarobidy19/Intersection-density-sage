@@ -69,7 +69,8 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 	            s += (1/phi.degree()) * ( self.conjugacy_class(x).cardinality()*phi(x) )
 	        eigenvalues.append(s)
 	    return sorted(list(set(eigenvalues))),gap.Minimum(eigenvalues),gap.Maximum(eigenvalues)
-	def is_join(self):
+
+	def is_join(self): #Test whether the derangement graph is a join or not
 	     Ev = self.eigenvalues_group()
 	     return -Ev[1] + Ev[2] == self.order()
 	def has_regular_subgroup(self,description=False):
@@ -124,7 +125,7 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 	                    break
 	    return list(set(L))+M
 	def gurobi_code(self,CC,name):
-	       Irr = G.irreducible_characters()
+	       Irr = self.irreducible_characters()
 	       if len(CC)>1:
 	            V = VA(len(CC))
 	       else:
@@ -176,3 +177,32 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 	       f.close()
 	       print("Done")
 	       return Labels
+
+	def rank_of_group(self):
+		return len(self.stabilizer(1).orbits())
+
+	def group_action(self,H):
+		X = self.cosets(H,side = 'left')
+		d = ZZ(self.order()/H.order())
+		transversal = [x[0] for x in X]
+		dic = dict()
+		for i in [1..d]:
+			dic[i] = transversal[i-1]
+		#action = lambda g,x: g*x[0]
+		index_of_element = lambda x: list(dic.keys())[list(dic.values()).index(x)]
+		action_on_transversal = lambda g,x,y: y if y.inverse()*g*x in H else ZZ(1) #x and y are elements of a transversal 
+		gens = self.gens_small()
+		generators_as_permutations = []
+		for g in gens:
+			N = [0]*d
+			for x in transversal:
+				i = index_of_element(x)
+				for y in transversal:
+					if action_on_transversal(g,x,y) != 1: # there is a bug that makes the identity element of the group and 0 (and False) equal. 
+						j = index_of_element(y)
+						N[i-1] = j
+			generators_as_permutations.append(PermutationGroupElement(N))
+		return PermutationGroup(generators_as_permutations)
+
+
+
