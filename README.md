@@ -12,6 +12,6 @@ sage: for x in M:
 sage: K = G.group_action(H)
 sage: S = K.stabilizer(1)
 sage: S.structure_description()
-'S3'
+'D6'
 sage: K.degree(),K.rank_of_group()
 ```
