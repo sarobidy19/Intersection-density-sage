@@ -129,7 +129,7 @@ def AGL_to_permutation_group_on_lines(n,q):
             N[i-1] = j
         #print N
         PermGrp.append(Permutation(N))
-    return PermutationGroup(PermGrp)
+    return permutation_group(PermutationGroup(PermGrp))
 
 def stabilizer_of_blocks(G,L):
     N = []

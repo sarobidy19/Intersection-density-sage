@@ -167,7 +167,7 @@ def GL_to_permutation_group_on_points(n,q):
             j = D[tuple(action_of_element(g[0],0,x))]
             N[i-1] = j
         PermGrp.append(Permutation(N))
-    return PermutationGroup(PermGrp)
+    return permutation_group(PermutationGroup(PermGrp))
 
 def SL_to_permutation_group_on_points(n,q):
     G = SL(n,GF(q))
@@ -187,7 +187,7 @@ def SL_to_permutation_group_on_points(n,q):
             j = D[tuple(action_of_element(g[0],0,x))]
             N[i-1] = j
         PermGrp.append(Permutation(N))
-    return PermutationGroup(PermGrp)
+    return permutation_group(PermutationGroup(PermGrp))
 
 def find_label(n,q,y):
     G = GL(n,GF(q))
@@ -232,51 +232,3 @@ def label_lines(q):
         D[i] = tuple(sorted(x))
         i += 1
     return D
-
-def GL_to_permutation_group_on_affine_lines(n,q):
-    L = find_line_generators(n,q)
-    P = L
-    G = GL(n,GF(q))
-    S = VectorSpace(GF(q),n)
-    D = label_field_for_lines(S,P)
-    Ggens = list(G.gens())
-    Sbasis = S.basis()
-    Group = []
-    PermGrp = []
-    for A in Ggens:
-        Group.append((A,0))
-    for g in Group:
-        N = [0]*(len(P))
-        for i in range(1,len(P)+1):
-            j = list(D.keys())[list(D.values()).index(action_of_element_on_lines(S,g[0],g[1],D[i]))]
-            #print i,j
-            N[i-1] = j
-        #print N
-        PermGrp.append(Permutation(N))
-    return PermutationGroup(PermGrp)
-
-def GL_to_permutation_group_on_affine_lines(q):
-    G = GL(2,GF(q))
-    D = label_lines(q)
-    Ggens = list(G.gens())
-    S = VectorSpace(GF(q),2)
-    Group = []
-    PermGrp = []
-    L = find_affine_lines(q)
-    for A in Ggens:
-            Group.append((A,0))
-    for g in Group:
-        N = [0]*(len(D))
-        for i in range(1,len(D)+1):
-            j = list(D.keys())[list(D.values()).index(tuple(tuple_to_vector(tuple(sorted(action_of_element_on_lines(S,g[0],g[1],D[i]))))))]
-            #print i,j
-            N[i-1] = j
-        PermGrp.append(Permutation(N))
-    return PermutationGroup(PermGrp)
-"""
-        N = [0]*(q^2-1)
-        for x in L:
-            i = D[tuple(x)]
-            j = D[tuple(action_of_element_on_lines(S,g[0],0,x))]
-            N[i-1] = j
-"""

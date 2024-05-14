@@ -202,7 +202,19 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 						j = index_of_element(y)
 						N[i-1] = j
 			generators_as_permutations.append(PermutationGroupElement(N))
-		return PermutationGroup(generators_as_permutations)
+		return permutation_group(PermutationGroup(generators_as_permutations))
+
+	def stabilizer_of_blocks(self,L):
+	    N = []
+	    Perms = []
+	    #L = self.blocks_all()[0]
+	    L = self.orbit(tuple(L),"OnSets")
+	    for x in L:
+	        N.append(self.stabilizer(tuple(x),"OnSets"))
+	    x = set(N[0])
+	    for s in N:
+	        x = set(s).intersection(x)
+	    return permutation_group(PermutationGroup(list(x)))
 
 
 
