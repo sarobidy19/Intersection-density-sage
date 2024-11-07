@@ -181,7 +181,13 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 	def rank_of_group(self):
 		return len(self.stabilizer(1).orbits())
 
-	def group_action(self,H):
+	def group_action(G,H):
+		C = G.cosets(H,side="left")
+		D = [frozenset(x) for x in C]
+		action_on_object = lambda g,x: frozenset([g*y for y in x])
+		return PermutationGroup(G.gens(),action = action_on_object,domain=D)
+
+	def group_action_old(self,H):
 		X = self.cosets(H,side = 'left')
 		d = ZZ(self.order()/H.order())
 		transversal = [x[0] for x in X]
@@ -215,6 +221,37 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 	    for s in N:
 	        x = set(s).intersection(x)
 	    return permutation_group(PermutationGroup(list(x)))
+	
+	def sub_orbits(self):
+		G = self
+		v = G.domain()[0]
+		S = G.stabilizer(v)
+		O = S.orbits()
+		Graphs,Digraphs = [],[]
+		symmetric = []
+		asymmetric = []
+		for i in [1..len(O)-1]:
+			x = O[i]
+			y = x[0]
+			for g in G:
+				if g(v) == y:
+					break
+			if (g.inverse())(v) in x:
+				symmetric.append(x)
+			else:
+				asymmetric.append(x)
+		for x in asymmetric:
+			X = DiGraph()
+			X.add_vertices(G.domain())
+			X.add_edges(G.orbit((v,x[0]),"OnTuples"))
+			Digraphs.append(X)
+		for x in symmetric:
+			X = Graph()
+			X.add_vertices(G.domain())
+			X.add_edges(G.orbit((v,x[0]),"OnTuples"))
+			Graphs.append(X)
+		return Digraphs+Graphs
+
 
 
 

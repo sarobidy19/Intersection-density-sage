@@ -361,12 +361,17 @@ def Run(q):
              print(intersecting(G,H) == True, x.structure_description())
              Great.append(x)
 
-def is_derangement(x):
-     if len(Permutation(x).fixed_points()) == 0:
+def is_derangement(x): #has bug from sage
+     if len(Permutation(x).fixed_points()) == 0 and x.order()>1:
          return True
      else:
          return False
 
+def is_derangement(x):
+    if 1 in x.cycle_type():
+        return False
+    else:
+        return True 
 
 def stab_union(G):
      H = []

@@ -51,10 +51,7 @@ def sieve_for_groups_old(G):
 def find_using_gurobi(G):
 	N = []
 	T = eigenvalues_group_conjugacy_class_and_weights_gurobi(G)[0]
-	#if ceil(T[0][0]) > float(T[0][0]) and floor(T[0][0]) < float(T[0][0]) :
-	#	m = ceil(T[0][0])
-	#else:
-	m = round(float(T[0][0]))
+	m = round(float(T))
 	n = G.order()/(m+1)
 	N.append([m,G.degree(),G.structure_description()])
 	if n.is_integer() and intersecting_subgroup_order(G,n) == True:
