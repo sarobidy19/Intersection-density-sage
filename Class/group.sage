@@ -20,7 +20,7 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 	            N[i-1] = j
 	        PermGens.append(Permutation(N))
 	    return PermutationGroup(PermGens)
-	def eigenvalues_group_with_all_dim(self):
+	def derangement_graph_eigenvalues_group_with_all_dim(self):
 	     IRR = self.irreducible_characters()
 	     derangement_conjugacy_classes_representatives = []
 	     eigenvalues = []
@@ -45,7 +45,7 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 	         Eigenvalues.append((x,sum(N)))
 
 	     return Eigenvalues
-	def der_graph(self):
+	def derangement_graph(self):
 		CC = self.conjugacy_classes_representatives()
 		D = []
 		for x in CC:
@@ -251,6 +251,18 @@ class permutation_group(sage.groups.perm_gps.permgroup_named.PermutationGroup_ge
 			X.add_edges(G.orbit((v,x[0]),"OnTuples"))
 			Graphs.append(X)
 		return Digraphs+Graphs
+	def pointwise_stabilizer(self,S):
+		T = self
+		for x in S:
+			T = T.intersection(self.stabilizer(x))
+		return T
+	def setwise_stabilizer(self,S):
+		return self.stabilizer(tuple(S),"OnSets")
+	def family_stabilizer(self,F):
+		G = self
+		for S in F:
+			G = G.intersection(self.setwise_stabilizer(S))
+		return G 
 
 
 
